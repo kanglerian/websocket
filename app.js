@@ -50,7 +50,7 @@ wss.on("connection", (ws) => {
         // Kirim pesan ke semua client (termasuk ESP8266)
         wss.clients.forEach((client) => {
           if (client.readyState === ws.OPEN) {
-            client.send(data.value === true ? "ON" : "OFF");
+            client.send(data.value === "1" ? "ON" : "OFF");
           }
         });
       }
