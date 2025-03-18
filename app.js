@@ -5,7 +5,7 @@ const http = require('http');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const { Server } = require('socket.io');
+const { WebSocketServer } = require("ws");
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -21,12 +21,7 @@ const allowedOriginSocket = [
   '*'
 ];
 
-const io = new Server(server, {
-  cors: {
-    origin: allowedOriginSocket,
-    methods: ['GET', 'POST'],
-  }
-});
+const wss = new WebSocketServer({ server });
 
 app.use(cors({
   origin: allowedOriginSocket,
@@ -43,12 +38,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-io.on('connection', (socket) => {
-  console.log('client connected');
+wss.on("connection", (ws) => {
+  console.log("Client terhubung!");
 
-  socket.on('switch-lamp', (data) => {
-    console.log('switch', data);
+  ws.on("switch-lamp", (data) => {
+      console.log(data);
+      ws.send("Pesan dari server: " + message);
+  });
+
+  ws.on("close", () => {
+      console.log("Client terputus");
   });
 });
-
 module.exports = {app, server};
