@@ -41,13 +41,20 @@ app.use('/users', usersRouter);
 wss.on("connection", (ws) => {
   console.log("Client terhubung!");
 
-  ws.on("switch-lamp", (data) => {
-      console.log(data);
-      ws.send("Pesan dari server: " + message);
+  ws.on("message", (message) => {
+    try {
+      const data = JSON.parse(message);
+      if (data.event === "switch-lamp") {
+        console.log("Lampu diubah:", data.value);
+        ws.send("Pesan dari server: Lampu diubah menjadi " + data.value);
+      }
+    } catch (err) {
+      console.error("Error parsing message:", err);
+    }
   });
 
   ws.on("close", () => {
-      console.log("Client terputus");
+    console.log("Client terputus");
   });
 });
-module.exports = {app, server};
+module.exports = { app, server };
