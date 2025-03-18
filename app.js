@@ -46,12 +46,19 @@ wss.on("connection", (ws) => {
       const data = JSON.parse(message);
       if (data.event === "switch-lamp") {
         console.log("Lampu diubah:", data.value);
-        ws.send("Pesan dari server: Lampu diubah menjadi " + data.value);
+
+        // Kirim pesan ke semua client (termasuk ESP8266)
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(data.value === true ? "ON" : "OFF");
+          }
+        });
       }
     } catch (err) {
       console.error("Error parsing message:", err);
     }
   });
+
 
   ws.on("close", () => {
     console.log("Client terputus");
