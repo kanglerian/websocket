@@ -17,8 +17,7 @@ const allowedOriginSocket = [
   'http://localhost',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5500',
-  'https://kanglerian-switch.vercel.app',
-  '*',
+  'https://kanglerian-switch.vercel.app'
 ];
 
 const io = new Server(server, {
